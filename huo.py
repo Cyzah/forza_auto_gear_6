@@ -114,19 +114,8 @@ def main():
             shutil.copy2(os.path.join(python_root, f), os.path.join(DIST, f))
             print(f'  {f}')
 
-    # 5. create launcher .bat
-    print('\n[5/6] Creating launcher...')
-    bat_content = f'''@echo off
-set PATH=%~dp0;%~dp0\\Library\\bin;%PATH%
-start "" "%~dp0\\Forza Auto Gear.exe"
-'''
-    bat_path = os.path.join(OUTPUT, 'Forza Auto Gear.bat')
-    with open(bat_path, 'w', encoding='utf-8') as f:
-        f.write(bat_content)
-    print(f'  {bat_path}')
-
-    # 6. copy extra files
-    print('\n[6/6] Copying extra files...')
+    # 5. copy extra files
+    print('\n[5/5] Copying extra files...')
     # example
     example_dst = os.path.join(DIST, 'example')
     if not os.path.isdir(example_dst):
