@@ -107,7 +107,6 @@ def main():
         '--name', 'Forza Auto Gear',
         '--icon', ICON,
         '--noconsole',
-        '--contents-directory', '.',
         '--version-file', version_path,
         '--paths', os.path.join(ROOT, 'forza_motorsport'),
         '--hidden-import', 'fdp',
