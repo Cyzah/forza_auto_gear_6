@@ -8,30 +8,3 @@ backup/**
 tests/__pycache__/**
 package/build/**
 package/dist/**
-
-# build artifacts
-output/
-build/
-build_tmp/
-dist/
-*.spec
-
-# python artifacts
-*.pyc
-*.pyo
-*.pyd
-*.egg
-*.egg-info/
-.eggs/
-*.whl
-
-# user settings
-settings.json
-
-# temp files
-get-pip.py
-get-pip.py~
-*.tmp
-*.bak
-*.swp
-*~
