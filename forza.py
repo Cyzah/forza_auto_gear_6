@@ -57,7 +57,7 @@ class Forza(CarInfo):
         self.boundKeys = lambda: [self.clutch, self.upshift, self.downshift]
 
         # constant
-        self.config_folder = os.path.join(constants.root_path, 'config')
+        self.config_folder = os.path.join(constants.root_path, constants.config_folder_name)
 
         # create folders if not existed
         if not os.path.exists(self.config_folder):

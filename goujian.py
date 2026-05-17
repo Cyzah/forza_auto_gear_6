@@ -122,10 +122,10 @@ def main():
         shutil.copytree(EXAMPLE_SRC, example_dst)
     print(f'  example/')
 
-    # config folder
-    config_dst = os.path.join(DIST, 'config')
-    os.makedirs(config_dst, exist_ok=True)
-    print(f'  config/')
+    # configs folder
+    configs_dst = os.path.join(DIST, 'configs')
+    os.makedirs(configs_dst, exist_ok=True)
+    print(f'  configs/')
 
     # config json files
     src_config = os.path.join(ROOT, 'config')
@@ -133,7 +133,7 @@ def main():
         for f in os.listdir(src_config):
             src_file = os.path.join(src_config, f)
             if os.path.isfile(src_file):
-                shutil.copy2(src_file, config_dst)
+                shutil.copy2(src_file, configs_dst)
         print(f'  config/*.json')
 
     # settings.json
