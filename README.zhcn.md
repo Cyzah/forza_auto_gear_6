@@ -25,6 +25,10 @@ Install >= Python 3.8
     ```
 2. 你也可以直接在[release](https://github.com/Juice-XIJ/forza_auto_gear/releases)里下载打包好的程序`Forza_Auto_Gear_GUI`，并运行 `Forza_Auto_Gear_GUI.exe`.
 
+> **注意**: Windows SmartScreen 可能会阻止程序运行（因为没有数字签名）。解决方法：
+> - 点击 **"更多信息"** → **"仍要运行"**
+> - 或者右键点击 exe 文件 → **属性** → 勾选 **"解除锁定"** → **确定**
+
 ## 使用方式
 ### 运行程序
 如果下载的是打包好的程序，则直接运行`Forza_Auto_Gear_GUI.exe`。如果下载的是源代码，可以运行 `python ./gui.py`来使用图形界面. 如果更喜欢命令行模式，可以运行 `python ./main.py`

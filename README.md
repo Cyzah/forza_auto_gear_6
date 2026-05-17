@@ -34,6 +34,10 @@ Setup the data out:
     ```
 2. You could download the `Forza_Auto_Gear_GUI` from the [release](https://github.com/Juice-XIJ/forza_auto_gear/releases) to run the `Forza_Auto_Gear_GUI.exe` directly.
 
+> **Note**: Windows SmartScreen may block the app since it's unsigned. To run it:
+> - Click **"More info"** → **"Run anyway"**
+> - Or right-click the exe → **Properties** → check **"Unblock"** → **OK**
+
 ## Usage
 1. If you download the `Forza_Auto_Gear_GUI.exe` directly, the GUI is running. If you download the source code, please run: `python ./gui.py` to use GUI. If preferred command line, please run `python ./main.py`.
 2. F10 starts the data collection:
