@@ -6,9 +6,10 @@ import warnings
 from concurrent.futures import ThreadPoolExecutor
 from tkinter import scrolledtext
 
-# Add _bin directory to DLL search path (for bundled pyd/dll files)
+# Add DLL directory to search path (for bundled pyd/dll files)
 if getattr(sys, 'frozen', False):
-    bin_dir = os.path.join(os.path.dirname(sys.executable), '_bin')
+    app_dir = os.path.dirname(sys.executable)
+    bin_dir = os.path.join(app_dir, '_bin')
     if os.path.isdir(bin_dir):
         os.add_dll_directory(bin_dir)
 

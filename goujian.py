@@ -63,6 +63,40 @@ def main():
 
     # 3. PyInstaller
     print('\n[3/5] Building...')
+
+    # Create version info file
+    version_content = """VSVersionInfo(
+  ffi=FixedFileInfo(
+    filevers=(6, 0, 0, 0),
+    prodvers=(6, 0, 0, 0),
+    mask=0x3f,
+    flags=0x0,
+    OS=0x40004,
+    fileType=0x1,
+    subtype=0x0,
+    date=(0, 0)
+  ),
+  kids=[
+    StringFileInfo(
+      [
+        StringTable(
+          u'080904B0',
+          [StringStruct(u'CompanyName', u'Forza Auto Gear'),
+           StringStruct(u'FileDescription', u'Forza Auto Gear - Automatic Shifting Tool'),
+           StringStruct(u'FileVersion', u'6.0.0.0'),
+           StringStruct(u'InternalName', u'ForzaAutoGear'),
+           StringStruct(u'OriginalFilename', u'Forza Auto Gear.exe'),
+           StringStruct(u'ProductName', u'Forza Auto Gear'),
+           StringStruct(u'ProductVersion', u'6.0.0.0')])
+      ]),
+    VarFileInfo([VarStruct(u'Translation', [2052, 1200])])
+  ]
+)"""
+    version_path = os.path.join(BUILD_TMP, 'version_info.txt')
+    os.makedirs(BUILD_TMP, exist_ok=True)
+    with open(version_path, 'w', encoding='utf-8') as f:
+        f.write(version_content)
+
     run([
         PYTHON, '-m', 'PyInstaller',
         '--noconfirm',
@@ -73,6 +107,8 @@ def main():
         '--name', 'Forza Auto Gear',
         '--icon', ICON,
         '--noconsole',
+        '--contents-directory', '.',
+        '--version-file', version_path,
         '--paths', os.path.join(ROOT, 'forza_motorsport'),
         '--hidden-import', 'fdp',
         '--hidden-import', 'yaml',
