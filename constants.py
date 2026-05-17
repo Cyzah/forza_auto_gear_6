@@ -1,5 +1,6 @@
 import enum
 import os
+import sys
 from pynput.keyboard import Key
 
 
@@ -11,8 +12,11 @@ class ConfigVersion(enum.Enum):
 
 default_config_version = ConfigVersion.v2
 
-# repo path
-root_path = os.path.dirname(os.path.abspath(__file__))
+# repo path - use exe directory when frozen
+if getattr(sys, 'frozen', False):
+    root_path = os.path.dirname(sys.executable)
+else:
+    root_path = os.path.dirname(os.path.abspath(__file__))
 setting_filename = 'settings.json'
 config_folder_name = 'configs'
 
