@@ -301,7 +301,7 @@ class Forza(CarInfo):
             self.logger.debug(f'[{iteration}] {debug_log}')
 
             # up shift logic
-            if gear < self.maxGear and accel:
+            if gear < self.maxGear and accel and gear in self.shift_point:
                 target_rpm = self.shift_point[gear]['rpmo'] * self.shift_point_factor
                 target_up_speed = int(self.shift_point[gear]['speed'] * self.shift_point_factor)
 
@@ -317,23 +317,26 @@ class Forza(CarInfo):
                     # AWD, FWD logic
                     fired = self.__up_shift(rpm, target_rpm, speed, target_up_speed, slips, iteration, gear, fdp)
 
-            # down shift logiciqw
+            # down shift logic
             if not fired and gear > self.minGear:
                 available_gears = self.shift_point.keys()
                 if gear - 1 in available_gears:
                     lower_gear = gear - 1
-                else:
+                elif available_gears:
                     lower_gear = min(available_gears, key=lambda x: abs(x - (gear - 1)))
-
-                target_down_speed = self.shift_point[lower_gear]['speed'] * self.shift_point_factor
-
-                # RWD logic
-                if self.car_drivetrain == 1:
-                    # don't down shift to gear 1 when RWD
-                    if gear >= 3:
-                        self.__down_shift(speed, target_down_speed, slips, iteration, gear, fdp)
                 else:
-                    self.__down_shift(speed, target_down_speed, slips, iteration, gear, fdp)
+                    lower_gear = None
+
+                if lower_gear is not None:
+                    target_down_speed = self.shift_point[lower_gear]['speed'] * self.shift_point_factor
+
+                    # RWD logic
+                    if self.car_drivetrain == 1:
+                        # don't down shift to gear 1 when RWD
+                        if gear >= 3:
+                            self.__down_shift(speed, target_down_speed, slips, iteration, gear, fdp)
+                    else:
+                        self.__down_shift(speed, target_down_speed, slips, iteration, gear, fdp)
 
         return iteration
 

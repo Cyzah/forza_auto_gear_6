@@ -197,6 +197,11 @@ def calculate_optimal_shift_point(forza: CarInfo):
         # search optimal rpm. Starting from max rpm.
         rpms = np.array([item['rpm'] for item in rpm_to_torque])
         rpms1 = np.array([item['rpm'] for item in rpm_to_torque1])
+
+        if len(rpms) == 0 or len(rpms1) == 0:
+            forza.logger.warning(f'Skipping optimal shift point from {gear} to {next_gear}: insufficient data')
+            continue
+
         max_rpm = int(max(np.max(rpms), np.max(rpms1)))
         min_rpm = int(max(np.min(rpms), np.min(rpms1)))
         rpmo = max_rpm
