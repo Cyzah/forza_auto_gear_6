@@ -8,3 +8,5 @@ backup/**
 tests/__pycache__/**
 package/build/**
 package/dist/**
+output/**
+*.egg-info/**

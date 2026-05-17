@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 huo - Forza Auto Gear 一键构建脚本
-用法: py huo.py
+用法: py goujian.py
 """
 
 import os
