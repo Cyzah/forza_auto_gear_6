@@ -74,6 +74,7 @@ class Forza(CarInfo):
 
         self.last_upshift = time.time()
         self.last_downshift = time.time()
+        self.last_shift = time.time()
 
         # === exp farm setting ===
         self.reset_car = 0
