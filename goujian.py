@@ -89,6 +89,10 @@ def main():
     # 4. copy pywin32 DLLs, .pyd files, and Python runtime DLLs
     print('\n[4/5] Copying runtime files...')
 
+    # Create _bin folder for DLLs and PYDs
+    bin_dst = os.path.join(DIST, '_bin')
+    os.makedirs(bin_dst, exist_ok=True)
+
     copy_dirs = [
         ('pywin32', os.path.join(SITE_PACKAGES, 'win32')),
         ('pywin32_system32', os.path.join(SITE_PACKAGES, 'pywin32_system32')),
@@ -103,7 +107,7 @@ def main():
         count = 0
         for f in os.listdir(src_dir):
             if f.endswith(('.dll', '.pyd')):
-                shutil.copy2(os.path.join(src_dir, f), os.path.join(DIST, f))
+                shutil.copy2(os.path.join(src_dir, f), os.path.join(bin_dst, f))
                 count += 1
         print(f'  {label}: {count} files')
 
@@ -111,8 +115,10 @@ def main():
     python_root = os.path.dirname(PYTHON)
     for f in os.listdir(python_root):
         if f.startswith('python') and f.endswith('.dll'):
-            shutil.copy2(os.path.join(python_root, f), os.path.join(DIST, f))
+            shutil.copy2(os.path.join(python_root, f), os.path.join(bin_dst, f))
             print(f'  {f}')
+
+    print(f'  _bin/')
 
     # 5. copy extra files
     print('\n[5/5] Copying extra files...')
