@@ -6,6 +6,8 @@ import time
 
 PROJECT = os.path.dirname(os.path.abspath(__file__))
 VENV_PYTHON = os.path.join(PROJECT, '.venv', 'Scripts', 'python.exe')
+if not os.path.exists(VENV_PYTHON):
+    VENV_PYTHON = sys.executable
 APP_NAME = 'ForzaAutoGear'
 ENTRY = os.path.join(PROJECT, 'gui.py')
 OUTPUT = os.path.join(PROJECT, 'output')
