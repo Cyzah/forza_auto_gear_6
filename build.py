@@ -24,6 +24,17 @@ for d in [DIST, BUILD, OUTPUT]:
     if os.path.exists(d):
         shutil.rmtree(d)
 
+print('[2.5/5] Ensuring required directories...')
+configs_dir = os.path.join(PROJECT, 'configs')
+os.makedirs(configs_dir, exist_ok=True)
+settings_file = os.path.join(configs_dir, 'settings.json')
+if not os.path.exists(settings_file):
+    import json
+    with open(settings_file, 'w', encoding='utf-8') as f:
+        json.dump({"clutch": "i", "upshift": "e", "downshift": "q", "offroad_rally": False, "enable_clutch": True, "farming": False}, f, indent=4)
+example_dir = os.path.join(PROJECT, 'example')
+os.makedirs(example_dir, exist_ok=True)
+
 print('[3/5] Building... (first run ~3-5 min, subsequent runs use cache)')
 sep = ';'
 
