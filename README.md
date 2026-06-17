@@ -1,7 +1,7 @@
 [简体中文](./README.zhcn.md)
 
-# forza_auto_gear
-forza_auto_gear is a tool for Forza Horizon 5. It will help us understand the best gear shift point using Manual or w/ Clutch in Forza Horizon 5. Built with python.
+# Forza_Auto_Gear
+forza_auto_gear is a tool for Forza Horizon. It will help us understand the best gear shift point using Manual or w/ Clutch in Forza Horizon. Built with python.
 
 ## Quick View
 GUI Demo
