@@ -1,7 +1,7 @@
 [English](./README.md)
 
-# forza_auto_gear
-forza_auto_gear是为极限竞速：地平线5开发的一款测试工具。功能如下：
+# Forza_Auto_Gear
+forza_auto_gear是为极限竞速：地平线6开发的一款测试工具。功能如下：
 
 0. 图形界面，让你更轻松使用这款工具。
 1. 它能帮助玩家更好地理解手动档和手离的最佳换挡时机，且可以进行自动升降档。
