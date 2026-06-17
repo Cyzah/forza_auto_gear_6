@@ -130,7 +130,10 @@ class Forza(CarInfo):
 
             plt.close()
             fig, ax = plt.subplots(2, 2, figsize=(25.6, 14.4), dpi=100)
-            fig.tight_layout(pad=3.0)
+            try:
+                fig.tight_layout(pad=3.0)
+            except Exception:
+                pass
             plotter.plot_gear_ratio(self, ax, 0, 0)
             plotter.plot_torque_rpm(self, ax, 0, 1)
             plotter.plot_torque_speed(self, ax, 1, 0)

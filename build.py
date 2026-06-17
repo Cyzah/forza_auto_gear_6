@@ -73,6 +73,7 @@ cmd = [
     f'--add-data={os.path.join(PROJECT, "forza_motorsport", "fdp.py")}{sep}forza_motorsport',
     f'--add-data={os.path.join(PROJECT, "configs")}{sep}configs',
     f'--add-data={os.path.join(PROJECT, "example")}{sep}example',
+    '--collect-data', 'matplotlib',
     '--distpath', OUTPUT, '--workpath', BUILD, '--specpath', BUILD,
 ] + exclude_args + [ENTRY]
 
@@ -142,10 +143,17 @@ for sub in ['sample_data', 'images', 'plot_directive', 'stylelib', 'kpsewhich.lu
 # 6. matplotlib fonts: keep only essential fonts
 mpl_fonts = os.path.join(mpl_data, 'fonts')
 if os.path.isdir(mpl_fonts):
-    keep_fonts = ['DejaVuSans.ttf', 'DejaVuSans-Bold.ttf']
+    keep_font_dirs = ['ttf']
+    keep_font_files = ['DejaVuSans.ttf', 'DejaVuSans-Bold.ttf', 'LastResortHE-Regular.ttf']
     for item in os.listdir(mpl_fonts):
         p = os.path.join(mpl_fonts, item)
-        if item not in keep_fonts:
+        if item in keep_font_dirs:
+            if os.path.isdir(p):
+                for f in os.listdir(p):
+                    fp = os.path.join(p, f)
+                    if f not in keep_font_files and os.path.isfile(fp):
+                        os.remove(fp)
+        else:
             if os.path.isdir(p):
                 shutil.rmtree(p)
             else:
