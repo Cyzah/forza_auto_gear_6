@@ -1,12 +1,14 @@
 dump/**
-config/**
+configs/**
 __pycache__/**
 log/**
 .vscode/**
 backup/**
 .idea/**
+.venv/**
 tests/__pycache__/**
-package/build/**
-package/dist/**
+build/**
+dist/**
 output/**
+analysis/**
 *.egg-info/**
