@@ -17,6 +17,8 @@ if getattr(sys, 'frozen', False):
     root_path = os.path.dirname(sys.executable)
 else:
     root_path = os.path.dirname(os.path.abspath(__file__))
+
+sys.path.append(os.path.join(root_path, 'forza_motorsport'))
 setting_filename = 'settings.json'
 config_folder_name = 'configs'
 
@@ -36,18 +38,9 @@ example_car_ordinal = 'example'
 # === UI settings ===
 background_color = "#1a181a"
 text_color = "#a1a1a1"
-panel_color = "#16213e"
 accent_color = "#0f3460"
 highlight_color = "#e94560"
 text_secondary = "#a0a0b0"
-perf_sticker_background = "#FFFFFF"
-
-# car info relx, rely on
-car_info_leftbound_relx = 0.08
-car_info_rightbound_relx = 0.9
-car_info_topbound_rely = 0.195
-car_info_bottombound_rely = 0.815
-car_info_line_gap = 0.065
 
 # car drivetrain
 car_drivetrain_list = [
@@ -56,27 +49,6 @@ car_drivetrain_list = [
     ('AWD', '四驱'),
     ('N', 'N')
 ]
-
-# tire canvas info: Position: [start_x1_factor, start_y1_factor, s radius]
-x_padding_left = 0.025
-x_padding_right = 0.025
-y_padding_top = 0.075
-y_padding_bot = 0.025
-width = 0.1
-height = 0.25
-x_dis = 0.1
-y_dis = 0.1
-radius = 12
-tire_canvas_relx = 0.5
-tire_canvas_rely = 0.5
-tire_canvas_relwidth = width * 2 + x_dis + x_padding_left + x_padding_right
-tire_canvas_relheight = height * 2 + y_dis + y_padding_top + y_padding_bot
-tires = {
-    "FL": [x_padding_left, y_padding_top, x_padding_left + width, y_padding_top + height, radius],
-    "FR": [x_padding_left + width + x_dis, y_padding_top, x_padding_left + width * 2 + x_dis, y_padding_top + height, radius],
-    "RL": [x_padding_left, y_padding_top + height + y_dis, x_padding_left + width, y_padding_top + height * 2 + y_dis, radius],
-    "RR": [x_padding_left + width + x_dis, y_padding_top + height + y_dis, x_padding_left + width * 2 + x_dis, y_padding_top + height * 2 + y_dis, radius]
-}
 
 # car class mapping
 car_class_list = ['D', 'C', 'B', 'A', 'S1', 'S2', 'R', 'X', 'N']
@@ -95,7 +67,6 @@ upshift = 'e'  # up shift
 downshift = 'q'  # down shift
 acceleration = 'w'  # acceleration
 brake = 's'  # brake
-boundKeys = [stop.name, close.name, collect_data.name, analysis.name, auto_shift.name]
 
 # === Delay Settings ===
 delay_clutch_to_shift = 0.08
@@ -110,9 +81,6 @@ blip_throttle_duration = 0.12
 shift_factor = 0.99
 offroad_rally_shift_factor = 0.93
 downshift_hysteresis = 0.94  # additional reduction for downshift threshold to prevent up/down oscillation
-
-# === Test Settings ===
-test_car_ordinal = 'analysis_test'
 
 # === Text Settings ===
 select_language_txt = ['Select Language:', '选择语言:']

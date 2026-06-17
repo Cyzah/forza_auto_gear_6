@@ -19,6 +19,22 @@ from PySide6.QtWidgets import (
     QGraphicsDropShadowEffect,
 )
 import matplotlib.colors as mcolors
+
+CHECKBOX_STYLE = """
+    QCheckBox { font-size: 16px; margin: 0px; }
+    QCheckBox::indicator { width: 16px; height: 16px; }
+    QCheckBox::indicator:hover { border: 1px solid #4ade80; }
+"""
+
+
+def _get_app_dir():
+    if getattr(sys, 'frozen', False):
+        return os.path.dirname(sys.executable)
+    return os.path.dirname(os.path.abspath(__file__))
+
+
+def _get_icon_path():
+    return os.path.join(_get_app_dir(), 'icon', '3.ico')
 from pynput.keyboard import Listener
 
 import constants
@@ -407,9 +423,8 @@ class MainWindow(QMainWindow):
         self._texts = {}
         self._init_texts()
         self.threadPool = ThreadPoolExecutor(max_workers=8, thread_name_prefix="exec")
-        self.logger = Logger()('ForzaHorizon5')
         self.forza5 = Forza(
-            self.threadPool, self.logger,
+            self.threadPool, None,
             constants.packet_format, enable_clutch=constants.enable_clutch,
         )
         self._apply_text(self.language)
@@ -417,11 +432,7 @@ class MainWindow(QMainWindow):
         self.setWindowTitle("Forza Horizon 6: Auto Gear Shifting")
         self.setMinimumSize(1200, 800)
         self.resize(1380, 950)
-        if getattr(sys, 'frozen', False):
-            app_dir = os.path.dirname(sys.executable)
-        else:
-            app_dir = os.path.dirname(os.path.abspath(__file__))
-        icon_path = os.path.join(app_dir, 'icon', '3.ico')
+        icon_path = _get_icon_path()
         if os.path.exists(icon_path):
             self.setWindowIcon(QIcon(icon_path))
         # Set dark title bar on Windows 10/11
@@ -457,7 +468,6 @@ class MainWindow(QMainWindow):
         except Exception:
             pass
         self.setStyleSheet(STYLESHEET)
-        self._tire_cmap = mcolors.LinearSegmentedColormap.from_list("", [(0, "green"), (1, "red")])
         self._build_ui()
         self._build_buttons()
         self.logger.info('Forza Horizon 6: Auto Gear Shifting Started!!!')
@@ -601,11 +611,7 @@ class MainWindow(QMainWindow):
 
         self._chk_clutch = QCheckBox(self._texts["clutch"])
         self._chk_clutch.setChecked(self.forza5.enable_clutch)
-        self._chk_clutch.setStyleSheet("""
-            QCheckBox { font-size: 16px; margin: 0px; }
-            QCheckBox::indicator { width: 16px; height: 16px; }
-            QCheckBox::indicator:hover { border: 1px solid #4ade80; }
-        """)
+        self._chk_clutch.setStyleSheet(CHECKBOX_STYLE)
         self._chk_clutch.setCursor(Qt.CursorShape.PointingHandCursor)
         self._chk_clutch.setToolTip("启用离合器模拟，换挡时自动控制离合" if self.language == 1 else "Enable clutch simulation, auto control clutch during shift")
         self._chk_clutch.toggled.connect(lambda v: setattr(self.forza5, 'enable_clutch', v))
@@ -613,11 +619,7 @@ class MainWindow(QMainWindow):
 
         self._chk_farm = QCheckBox(self._texts["farm"])
         self._chk_farm.setChecked(self.forza5.farming)
-        self._chk_farm.setStyleSheet("""
-            QCheckBox { font-size: 16px; margin: 0px; }
-            QCheckBox::indicator { width: 16px; height: 16px; }
-            QCheckBox::indicator:hover { border: 1px solid #4ade80; }
-        """)
+        self._chk_farm.setStyleSheet(CHECKBOX_STYLE)
         self._chk_farm.setCursor(Qt.CursorShape.PointingHandCursor)
         self._chk_farm.setToolTip("开启刷图模式，自动按住油门并处理卡住情况" if self.language == 1 else "Enable farming mode, auto hold throttle and handle stuck situations")
         self._chk_farm.toggled.connect(lambda v: setattr(self.forza5, 'farming', v))
@@ -625,11 +627,7 @@ class MainWindow(QMainWindow):
 
         self._chk_offroad = QCheckBox(self._texts["offroad_rally"])
         self._chk_offroad.setChecked(self.forza5.shift_point_factor == constants.offroad_rally_shift_factor)
-        self._chk_offroad.setStyleSheet("""
-            QCheckBox { font-size: 16px; margin: 0px; }
-            QCheckBox::indicator { width: 16px; height: 16px; }
-            QCheckBox::indicator:hover { border: 1px solid #4ade80; }
-        """)
+        self._chk_offroad.setStyleSheet(CHECKBOX_STYLE)
         self._chk_offroad.setCursor(Qt.CursorShape.PointingHandCursor)
         self._chk_offroad.setToolTip("越野/拉力模式，提前换挡防止打滑" if self.language == 1 else "Offroad/Rally mode, shift earlier to prevent wheel slip")
         self._chk_offroad.toggled.connect(

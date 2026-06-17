@@ -1,7 +1,8 @@
-﻿import os
-import sys
+﻿import glob
+import os
 import shutil
 import subprocess
+import sys
 import time
 
 PROJECT = os.path.dirname(os.path.abspath(__file__))
@@ -25,18 +26,11 @@ for d in [DIST, BUILD, OUTPUT]:
         shutil.rmtree(d)
 
 print('[2.5/5] Ensuring required directories...')
-configs_dir = os.path.join(PROJECT, 'configs')
-os.makedirs(configs_dir, exist_ok=True)
-settings_file = os.path.join(configs_dir, 'settings.json')
-if not os.path.exists(settings_file):
-    import json
-    with open(settings_file, 'w', encoding='utf-8') as f:
-        json.dump({"clutch": "i", "upshift": "e", "downshift": "q", "offroad_rally": False, "enable_clutch": True, "farming": False}, f, indent=4)
 example_dir = os.path.join(PROJECT, 'example')
 os.makedirs(example_dir, exist_ok=True)
 
 print('[3/5] Building... (first run ~3-5 min, subsequent runs use cache)')
-sep = ';'
+sep = os.pathsep
 
 unused = [
     'tkinter', 'test', 'email', 'pydoc', 'pdb',
@@ -84,11 +78,17 @@ cmd = [
     '--hidden-import', 'numpy',
     '--hidden-import', 'matplotlib.backends.backend_qtagg',
     f'--add-data={os.path.join(PROJECT, "forza_motorsport", "fdp.py")}{sep}forza_motorsport',
-    f'--add-data={os.path.join(PROJECT, "configs")}{sep}configs',
-    f'--add-data={os.path.join(PROJECT, "example")}{sep}example',
     '--collect-data', 'matplotlib',
     '--distpath', OUTPUT, '--workpath', BUILD, '--specpath', BUILD,
 ] + exclude_args + [ENTRY]
+
+configs_dir = os.path.join(PROJECT, 'configs')
+if os.path.isdir(configs_dir):
+    cmd.insert(-1, f'--add-data={configs_dir}{sep}configs')
+
+example_dir = os.path.join(PROJECT, 'example')
+if os.path.isdir(example_dir):
+    cmd.insert(-1, f'--add-data={example_dir}{sep}example')
 
 start = time.time()
 proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, encoding='utf-8', errors='replace')
@@ -173,14 +173,14 @@ if os.path.isdir(mpl_fonts):
                 os.remove(p)
 
 # 7. Remove example folder from _internal (already copied to app root)
-example_dir = os.path.join(internal, 'example')
-if os.path.isdir(example_dir):
-    shutil.rmtree(example_dir)
+internal_example = os.path.join(internal, 'example')
+if os.path.isdir(internal_example):
+    shutil.rmtree(internal_example)
 
 # 8. Remove configs from _internal (already copied to app root)
-configs_dir = os.path.join(internal, 'configs')
-if os.path.isdir(configs_dir):
-    shutil.rmtree(configs_dir)
+internal_configs = os.path.join(internal, 'configs')
+if os.path.isdir(internal_configs):
+    shutil.rmtree(internal_configs)
 
 # 9. Remove unnecessary Python files
 for f in ['__pycache__', 'LICENSE', 'README.md', 'setup.py', 'setup.cfg', 'pyproject.toml']:
@@ -192,7 +192,6 @@ for f in ['__pycache__', 'LICENSE', 'README.md', 'setup.py', 'setup.cfg', 'pypro
 
 # 10. Remove numpy dist-info
 numpy_dist = os.path.join(internal, 'numpy-*.dist-info')
-import glob
 for d in glob.glob(numpy_dist):
     if os.path.isdir(d):
         shutil.rmtree(d)
@@ -200,9 +199,8 @@ for d in glob.glob(numpy_dist):
 # 11. Remove unused PIL modules
 pil_dir = os.path.join(internal, 'PIL')
 if os.path.isdir(pil_dir):
-    for f in ['_avif.cp313-win_amd64.pyd', '_webp.cp313-win_amd64.pyd']:
-        p = os.path.join(pil_dir, f)
-        if os.path.isfile(p):
+    for pattern in ['_avif*.pyd', '_webp*.pyd']:
+        for p in glob.glob(os.path.join(pil_dir, pattern)):
             os.remove(p)
 
 # 12. Remove Qt6OpenGL.dll (not used)

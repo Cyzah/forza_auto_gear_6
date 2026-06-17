@@ -114,7 +114,7 @@ def get_gear_ratio_map(records: dict, forza):
     return res
 
 
-def get_torque(r: int, record_by_gear: list):
+def get_torque(r: float, record_by_gear: list):
     """get torque by rpm on a specific gear
 
     Args:
@@ -130,18 +130,6 @@ def get_torque(r: int, record_by_gear: list):
     r_index = np.abs(rpms - r).argmin()
     return record_by_gear[r_index]['torque']
 
-
-def get_gear_ratio(g: int, gear_ratios: dict):
-    """get gear ratio
-
-    Args:
-        g (int): gear
-        gear_ratios (dict): mapping of gear to gear ratio
-
-    Returns:
-        [float]: gear ratio
-    """
-    return gear_ratios[g]['ratio']
 
 
 def calculate_optimal_shift_point(forza: 'Forza'):
@@ -174,7 +162,7 @@ def calculate_optimal_shift_point(forza: 'Forza'):
         rpm_to_torque1 = records_by_gears[next_gear][rpm_torque1['min_rpm_index']:rpm_torque1['max_rpm_index'] + 1]
 
         ratio = forza.gear_ratios[gear]['ratio']
-        ratio1 = get_gear_ratio(next_gear, forza.gear_ratios)
+        ratio1 = forza.gear_ratios[next_gear]['ratio']
 
         rpms = np.array([item['rpm'] for item in rpm_to_torque])
         rpms1 = np.array([item['rpm'] for item in rpm_to_torque1])
@@ -221,11 +209,27 @@ def blip_throttle():
     keyboard_helper.release_str(constants.acceleration)
 
 
-def up_shift_handle(gear: int, forza: 'Forza'):
+def _shift_handle(gear: int, forza: 'Forza', direction: str):
+    is_up = direction == 'up'
+    label = '[UpShift]' if is_up else '[DownShift]'
+    target_gear = gear + 1 if is_up else gear - 1
+    shift_key = forza.upshift if is_up else forza.downshift
+    max_gear = forza.max_gear if is_up else forza.min_gear
+    in_range = gear < max_gear if is_up else gear > max_gear
+    in_range = in_range and (gear in forza.shift_point if is_up else True)
+
     cur = time.time()
-    if gear < forza.max_gear and gear in forza.shift_point and cur - forza.last_shift >= constants.shift_cooldown:
-        gap = cur - forza.last_upshift
-        forza.logger.info(f'[UpShift] {gear} > {gear + 1} (max: {forza.max_gear}), gap >= shift_cooldown ({gap:.2f} >= {constants.shift_cooldown})')
+    last_shift_time = forza.last_upshift if is_up else forza.last_downshift
+
+    if in_range and cur - forza.last_shift >= constants.shift_cooldown:
+        gap = cur - last_shift_time
+        forza.logger.info(f'{label} {gear} > {target_gear} ({"max" if is_up else "min"}: {max_gear}), gap >= shift_cooldown ({gap:.2f} >= {constants.shift_cooldown})')
+
+        if is_up:
+            forza.last_upshift = cur
+        else:
+            forza.last_downshift = cur
+        forza.last_shift = cur
 
         if forza.farming:
             keyboard_helper.release_str(constants.acceleration)
@@ -237,10 +241,10 @@ def up_shift_handle(gear: int, forza: 'Forza'):
                 forza.on_clutch_change(True)
             keyboard_helper.pressdown_str(forza.clutch)
             time.sleep(0.04)
-            forza.logger.debug(f'[UpShift] clutch {forza.clutch} down on {gear}')
+            forza.logger.debug(f'{label} clutch {forza.clutch} down on {gear}')
 
-        keyboard_helper.press_str(forza.upshift)
-        forza.logger.debug(f'[UpShift] upshift {forza.upshift} down and up on {gear}')
+        keyboard_helper.press_str(shift_key)
+        forza.logger.debug(f'{label} {"upshift" if is_up else "downshift"} {shift_key} down and up on {gear}')
 
         if forza.enable_clutch:
             keyboard_helper.release_str(forza.clutch)
@@ -248,50 +252,18 @@ def up_shift_handle(gear: int, forza: 'Forza'):
             forza.simulated_clutch = False
             if forza.on_clutch_change:
                 forza.on_clutch_change(False)
-            forza.logger.debug(f'[UpShift] clutch {forza.clutch} up on {gear}')
+            forza.logger.debug(f'{label} clutch {forza.clutch} up on {gear}')
 
         if forza.farming:
             keyboard_helper.pressdown_str(constants.acceleration)
-        forza.last_upshift = cur
-        forza.last_shift = cur
     else:
-        gap = cur - forza.last_upshift
-        forza.logger.debug(f'[UpShift] skip. {gear} > {gear + 1} (max: {forza.max_gear}), gear >= max_gear or gap < shift_cooldown ({gap:.2f} < {constants.shift_cooldown})')
+        gap = cur - last_shift_time
+        forza.logger.debug(f'{label} skip. {gear} > {target_gear} ({"max" if is_up else "min"}: {max_gear}), gear out of range or gap < shift_cooldown ({gap:.2f} < {constants.shift_cooldown})')
+
+
+def up_shift_handle(gear: int, forza: 'Forza'):
+    _shift_handle(gear, forza, 'up')
 
 
 def down_shift_handle(gear: int, forza: 'Forza'):
-    cur = time.time()
-    if gear > forza.min_gear and cur - forza.last_shift >= constants.shift_cooldown:
-        gap = cur - forza.last_downshift
-        forza.logger.info(f'[DownShift] {gear} > {gear - 1} (min: {forza.min_gear}), gap >= shift_cooldown ({gap:.2f} >= {constants.shift_cooldown})')
-        forza.last_downshift = cur
-        forza.last_shift = cur
-
-        if forza.farming:
-            keyboard_helper.release_str(constants.acceleration)
-            time.sleep(0.08)
-
-        if forza.enable_clutch:
-            forza.simulated_clutch = True
-            if forza.on_clutch_change:
-                forza.on_clutch_change(True)
-            keyboard_helper.pressdown_str(forza.clutch)
-            time.sleep(0.04)
-            forza.logger.debug(f'[DownShift] clutch {forza.clutch} down on {gear}')
-
-        keyboard_helper.press_str(forza.downshift)
-        forza.logger.debug(f'[DownShift] downshift {forza.downshift} down and up on {gear}')
-
-        if forza.enable_clutch:
-            keyboard_helper.release_str(forza.clutch)
-            time.sleep(0.04)
-            forza.simulated_clutch = False
-            if forza.on_clutch_change:
-                forza.on_clutch_change(False)
-            forza.logger.debug(f'[DownShift] clutch {forza.clutch} up on {gear}')
-
-        if forza.farming:
-            keyboard_helper.pressdown_str(constants.acceleration)
-    else:
-        gap = cur - forza.last_downshift
-        forza.logger.debug(f'[DownShift] skip. {gear} > {gear - 1} (min: {forza.min_gear}), gear <= min_gear or gap < shift_cooldown ({gap:.2f} < {constants.shift_cooldown})')
+    _shift_handle(gear, forza, 'down')

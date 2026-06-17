@@ -8,8 +8,6 @@ from typing import Optional, TYPE_CHECKING
 if TYPE_CHECKING:
     from forza import Forza
 
-sys.path.append(r'./forza_motorsport')
-import numpy as np
 from fdp import ForzaDataPacket
 
 import constants
@@ -26,6 +24,7 @@ def nextFdp(server_socket: socket.socket, fmt: str) -> Optional[ForzaDataPacket]
 
 
 def convert(n: object):
+    import numpy as np
     if isinstance(n, (np.int32, np.int64)):
         return n.item()
 

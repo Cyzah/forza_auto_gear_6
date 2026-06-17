@@ -1,4 +1,5 @@
 import ctypes
+import random
 import time
 
 import win32api
@@ -113,7 +114,7 @@ keybind = {
     'num_lock': 0x90,
     'scroll_lock': 0x91,
     'left_shift': 0xA0,
-    'right_shift ': 0xA1,
+    'right_shift': 0xA1,
     'left_control': 0xA2,
     'right_control': 0xA3,
     'left_menu': 0xA4,
@@ -152,8 +153,7 @@ keybind = {
     '[': 0xDB,
     '\\': 0xDC,
     ']': 0xDD,
-    "'": 0xDE,
-    '`': 0xC0
+    "'": 0xDE
 }
 
 key_list = keybind.keys()
@@ -213,7 +213,6 @@ def resetcar(forza: CarInfo):
 
 
 def press_brake(forza: CarInfo):
-    import random
     duration = random.uniform(0.1, 0.5)
     forza.logger.info(f"Brake!!!!! ({duration:.2f}s)")
     pressdown_str(constants.brake)

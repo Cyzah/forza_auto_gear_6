@@ -7,9 +7,6 @@ from concurrent.futures.thread import ThreadPoolExecutor
 from os import listdir
 from os.path import isfile, join
 
-import matplotlib.pyplot as plt
-
-sys.path.append(r'./forza_motorsport')
 from fdp import ForzaDataPacket
 
 import constants
@@ -122,6 +119,7 @@ class Forza(CarInfo):
 
     def _save_analysis_plot(self):
         try:
+            import matplotlib.pyplot as plt
             analysis_dir = os.path.join(constants.root_path, 'analysis')
             if not os.path.exists(analysis_dir):
                 os.makedirs(analysis_dir)

@@ -3,4 +3,3 @@ numpy>=2.4.0
 pynput>=1.8.0
 pywin32>=311
 PySide6>=6.11.0
-pillow>=12.0.0
