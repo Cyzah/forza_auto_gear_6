@@ -12,6 +12,7 @@ permissions:
 jobs:
   build:
     runs-on: windows-latest
+    timeout-minutes: 30
 
     steps:
       - uses: actions/checkout@v4
@@ -20,6 +21,7 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.13'
+          cache: 'pip'
 
       - name: Install dependencies
         run: |
@@ -29,15 +31,17 @@ jobs:
 
       - name: Build
         run: python build.py
-
-      - name: Compress output
-        run: Compress-Archive -Path "output\ForzaAutoGear" -DestinationPath "ForzaAutoGear.zip"
+        timeout-minutes: 20
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: ForzaAutoGear
-          path: ForzaAutoGear.zip
+          path: output/ForzaAutoGear
+
+      - name: Compress for release
+        if: startsWith(github.ref, 'refs/tags/')
+        run: Compress-Archive -Path "output\ForzaAutoGear" -DestinationPath "ForzaAutoGear.zip"
 
       - name: Create Release
         if: startsWith(github.ref, 'refs/tags/')
