@@ -49,7 +49,7 @@ class Logger:
             if not os.path.exists(log_folder):
                 os.makedirs(log_folder)
             file_handler = logging.FileHandler(
-                os.path.join(log_folder, 'forza5.log'), mode='w'
+                os.path.join(log_folder, 'forza.log'), mode='w'
             )
             file_handler.setFormatter(logging.Formatter(_LOG_FORMAT, datefmt=_LOG_DATEFMT))
             file_handler.setLevel(logging.DEBUG)

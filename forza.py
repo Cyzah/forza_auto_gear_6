@@ -127,16 +127,12 @@ class Forza(CarInfo):
             filepath = os.path.join(analysis_dir, filename)
 
             plt.close()
-            fig, ax = plt.subplots(2, 2, figsize=(25.6, 14.4), dpi=100)
-            try:
-                fig.tight_layout(pad=3.0)
-            except Exception:
-                pass
+            fig, ax = plt.subplots(2, 2, figsize=(19.2, 10.8), dpi=100, constrained_layout=True)
             plotter.plot_gear_ratio(self, ax, 0, 0)
             plotter.plot_torque_rpm(self, ax, 0, 1)
             plotter.plot_torque_speed(self, ax, 1, 0)
             plotter.plot_rpm_speed(self, ax, 1, 1)
-            plt.savefig(filepath, bbox_inches='tight', dpi=100)
+            plt.savefig(filepath, dpi=100)
             plt.close()
             self.logger.info(f'Analysis plot saved to {filepath}')
         except Exception as e:

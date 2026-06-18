@@ -5,7 +5,7 @@ class CarInfo:
         self.car_class = -1
         self.car_drivetrain = -1
         self.min_gear = 1
-        self.max_gear = 5
+        self.max_gear = 10
         self.gear_ratios = {}
         self.rpm_torque_map = {}
         self.shift_point = {}
